@@ -1,0 +1,181 @@
+---
+title: "Met Objects Dummy Variables & Correlation"
+output: html_notebook
+---
+```{r}
+#Look at objects and features columns
+head(MetObjects)
+```
+
+
+```{r}
+# reclass "Departments" into binary
+MetObjects$isDept1[MetObjects$Department == "American Decorative Arts"] <- 1
+MetObjects$isDept1[MetObjects$Department != "American Decorative Arts"] <- 0
+
+MetObjects$isDept2[MetObjects$Department == "American Paintings and Sculpture"] <- 1
+MetObjects$isDept2[MetObjects$Department != "American Paintings and Sculpture"] <- 0
+
+MetObjects$isDept3[MetObjects$Department == "Ancient Near Eastern Art"] <- 1
+MetObjects$isDept3[MetObjects$Department != "Ancient Near Eastern Art"] <- 0
+
+MetObjects$isDept4[MetObjects$Department == "Arms and Armor"] <- 1
+MetObjects$isDept4[MetObjects$Department != "Arms and Armor"] <- 0
+
+MetObjects$isDept5[MetObjects$Department == "Arts of Africa, Oceania, and the Americas"] <- 1
+MetObjects$isDept5[MetObjects$Department != "Arts of Africa, Oceania, and the Americas"] <- 0
+
+MetObjects$isDept6[MetObjects$Department == "Asian Art"] <- 1
+MetObjects$isDept6[MetObjects$Department != "Asian Art"] <- 0
+
+MetObjects$isDept7[MetObjects$Department == "Costume Institute"] <- 1
+MetObjects$isDept7[MetObjects$Department != "Costume Institute"] <- 0
+
+MetObjects$isDept8[MetObjects$Department == "Egyptian Art"] <- 1
+MetObjects$isDept8[MetObjects$Department != "Egyptian Art"] <- 0
+
+MetObjects$isDept9[MetObjects$Department == "European Paintings"] <- 1
+MetObjects$isDept9[MetObjects$Department != "European Paintings"] <- 0
+
+MetObjects$isDept10[MetObjects$Department == "European Sculpture and Decorative Arts"] <- 1
+MetObjects$isDept10[MetObjects$Department != "European Sculpture and Decorative Arts"] <- 0
+
+MetObjects$isDept11[MetObjects$Department == "Greek and Roman Art"] <- 1
+MetObjects$isDept11[MetObjects$Department != "Greek and Roman Art"] <- 0
+
+MetObjects$isDept12[MetObjects$Department == "Islamic Art"] <- 1
+MetObjects$isDept12[MetObjects$Department != "Islamic Art"] <- 0
+
+MetObjects$isDept13[MetObjects$Department == "Medieval Art"] <- 1
+MetObjects$isDept13[MetObjects$Department != "Medieval Art"] <- 0
+
+MetObjects$isDept14[MetObjects$Department == "Modern and Contemporary Art"] <- 1
+MetObjects$isDept14[MetObjects$Department != "Modern and Contemporary Art"] <- 0
+
+MetObjects$isDept15[MetObjects$Department == "Musical Instruments"] <- 1
+MetObjects$isDept15[MetObjects$Department != "Musical Instruments"] <- 0
+
+MetObjects$isDept16[MetObjects$Department == "Photographs"] <- 1
+MetObjects$isDept16[MetObjects$Department != "Photographs"] <- 0
+
+MetObjects$isDept17[MetObjects$Department == "Robert Lehman Collection"] <- 1
+MetObjects$isDept17[MetObjects$Department != "Robert Lehman Collection"] <- 0
+
+MetObjects$isDept18[MetObjects$Department == "The Libraries"] <- 1
+MetObjects$isDept18[MetObjects$Department != "The Libraries"] <- 0
+
+MetObjects$isDept19[MetObjects$Department == "Drawings and Prints"] <- 1
+MetObjects$isDept19[MetObjects$Department != "Drawings and Prints"] <- 0
+```
+
+```{r}
+
+#Rename date columns to be usable
+colnames(MetObjects)[22] <- "objectDateRange"
+colnames(MetObjects)[23] <- "objectBeginDate"
+colnames(MetObjects)[24] <- "objectEndDate"
+
+```
+
+```{r}
+install.packages('dplyr')
+library(dplyr)
+
+#create new csv copies
+write.csv(MetObjects, file = "MetObjects-copy.csv")
+
+#Work with new metobjects-copy file
+MetObjects_copy.csv <- "MetObjects"
+
+#remove non-numerical columns
+MetObjects_ce <- select(MetObjects, -isHighlight, -isPublic, -objectName, -Culture, -Title, -Period, -Dynasty, -Reign, -Portfolio, -artistRole, -artistPrefix, -artistDisplayName, -artistSuffix, -artistAlphaSort, -artistNationality, -objectDateRange, -Dimensions, -creditLine, -geographyType, -City, -State, -County, -Country, -Region, -Subregion, -Locale, -Locus, -Excavation, -River, -Classification, -rightsReproduction, -linkResolution, -metadataDate, -Repository, -Medium, -artistDisplayBio, -Department, -objectNumber, -artistBeginDate, -artistEndDate)
+
+#correlation matrix
+install.packages('corrplot')
+library(corrplot)
+
+corrmatrix <- cor(MetObjects_ce, use="complete.obs")
+View(corrmatrix)
+
+corrplot(corrmatrix, method="circle") # corrmatrix is the name of the correlation matrix we created above
+
+corrplot.mixed(corrmatrix, number.cex = 0.8, tl.cex = 0.6)
+#number.cex changes the size of the number fonts. tl.cex changes the size of the labels
+
+corrplot(corrmatrix, type="lower")
+```
+
+```{r}
+#leather subset
+leather <-subset(MetObjects, hasLeather==1)
+
+#leather and wood subset
+leatherWood <-subset(MetObjects, hasLeather==1 & hasWood==1)
+
+#leater and steel subset
+leatherSteel <-subset(MetObjects_copy, hasLeather==1 & hasSteel==1)
+
+#selectedMediums subset
+selectedMediums <-subset(MetObjects_copy, hasGold == 1 | hasSilver == 1 | hasBronze == 1 | hasGlass == 1 | hasLeather==1 | hasSteel==1 | hasZinc == 1 )
+
+#create new csv copies
+write.csv(selectedMediums, file = "selected_mediums_MetObjects.csv")
+
+hist(leatherSteel$objectBeginDate,
+     xlim = c(1200,2010))
+
+hist(leather$objectBeginDate)
+
+leatherMI <- subset(leather, Department =="Musical Instruments")
+leatherAA <- subset(leather, Department =="Arms and Armor")
+
+#create new csv copies
+write.csv(leather, file = "leather-copy.csv")
+
+```
+
+```{r}
+#Regression on objects by their begin date and department
+regression_1 <-lm(objectBeginDate~isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects)
+summary(regression_1)
+```
+
+
+```{r}
+#Regression on objects by medium features and department
+# features: hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc,
+
+#Gold objects
+regression_2 <- lm(hasGold ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects)
+summary(regression_2)
+```
+
+```{r}
+#Glass objects
+regression_3 <- lm(hasGlass ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects)
+summary(regression_3)
+```
+```{r}
+#Jade objects
+regression_4 <- lm(hasJade ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects)
+summary(regression_4)
+```
+
+```{r}
+#Leather objects
+regression_5 <- lm(hasLeather ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects)
+summary(regression_5)
+```
+```{r}
+#Alloy objects
+regression_6 <- lm(hasAlloy ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects)
+summary(regression_6)
+```
+
+```{r}
+#Regression on drawings and prints and medium features
+
+regression_7 <- lm(isDept19 ~ hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc, data=MetObjects)
+summary(regression_7)
+```
+
