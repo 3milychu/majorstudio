@@ -4,76 +4,76 @@ output: html_notebook
 ---
 ```{r}
 #Look at objects and features columns
-head(MetObjects)
+head(MetObjects_copy)
 ```
 
 
 ```{r}
 # reclass "Departments" into binary
-MetObjects$isDept1[MetObjects$Department == "American Decorative Arts"] <- 1
-MetObjects$isDept1[MetObjects$Department != "American Decorative Arts"] <- 0
+MetObjects_copy$isDept1[MetObjects_copy$Department == "American Decorative Arts"] <- 1
+MetObjects_copy$isDept1[MetObjects_copy$Department != "American Decorative Arts"] <- 0
 
-MetObjects$isDept2[MetObjects$Department == "American Paintings and Sculpture"] <- 1
-MetObjects$isDept2[MetObjects$Department != "American Paintings and Sculpture"] <- 0
+MetObjects_copy$isDept2[MetObjects_copy$Department == "American Paintings and Sculpture"] <- 1
+MetObjects_copy$isDept2[MetObjects_copy$Department != "American Paintings and Sculpture"] <- 0
 
-MetObjects$isDept3[MetObjects$Department == "Ancient Near Eastern Art"] <- 1
-MetObjects$isDept3[MetObjects$Department != "Ancient Near Eastern Art"] <- 0
+MetObjects_copy$isDept3[MetObjects_copy$Department == "Ancient Near Eastern Art"] <- 1
+MetObjects_copy$isDept3[MetObjects_copy$Department != "Ancient Near Eastern Art"] <- 0
 
-MetObjects$isDept4[MetObjects$Department == "Arms and Armor"] <- 1
-MetObjects$isDept4[MetObjects$Department != "Arms and Armor"] <- 0
+MetObjects_copy$isDept4[MetObjects_copy$Department == "Arms and Armor"] <- 1
+MetObjects_copy$isDept4[MetObjects_copy$Department != "Arms and Armor"] <- 0
 
-MetObjects$isDept5[MetObjects$Department == "Arts of Africa, Oceania, and the Americas"] <- 1
-MetObjects$isDept5[MetObjects$Department != "Arts of Africa, Oceania, and the Americas"] <- 0
+MetObjects_copy$isDept5[MetObjects_copy$Department == "Arts of Africa, Oceania, and the Americas"] <- 1
+MetObjects_copy$isDept5[MetObjects_copy$Department != "Arts of Africa, Oceania, and the Americas"] <- 0
 
-MetObjects$isDept6[MetObjects$Department == "Asian Art"] <- 1
-MetObjects$isDept6[MetObjects$Department != "Asian Art"] <- 0
+MetObjects_copy$isDept6[MetObjects_copy$Department == "Asian Art"] <- 1
+MetObjects_copy$isDept6[MetObjects_copy$Department != "Asian Art"] <- 0
 
-MetObjects$isDept7[MetObjects$Department == "Costume Institute"] <- 1
-MetObjects$isDept7[MetObjects$Department != "Costume Institute"] <- 0
+MetObjects_copy$isDept7[MetObjects_copy$Department == "Costume Institute"] <- 1
+MetObjects_copy$isDept7[MetObjects_copy$Department != "Costume Institute"] <- 0
 
-MetObjects$isDept8[MetObjects$Department == "Egyptian Art"] <- 1
-MetObjects$isDept8[MetObjects$Department != "Egyptian Art"] <- 0
+MetObjects_copy$isDept8[MetObjects_copy$Department == "Egyptian Art"] <- 1
+MetObjects_copy$isDept8[MetObjects_copy$Department != "Egyptian Art"] <- 0
 
-MetObjects$isDept9[MetObjects$Department == "European Paintings"] <- 1
-MetObjects$isDept9[MetObjects$Department != "European Paintings"] <- 0
+MetObjects_copy$isDept9[MetObjects_copy$Department == "European Paintings"] <- 1
+MetObjects_copy$isDept9[MetObjects_copy$Department != "European Paintings"] <- 0
 
-MetObjects$isDept10[MetObjects$Department == "European Sculpture and Decorative Arts"] <- 1
-MetObjects$isDept10[MetObjects$Department != "European Sculpture and Decorative Arts"] <- 0
+MetObjects_copy$isDept10[MetObjects_copy$Department == "European Sculpture and Decorative Arts"] <- 1
+MetObjects_copy$isDept10[MetObjects_copy$Department != "European Sculpture and Decorative Arts"] <- 0
 
-MetObjects$isDept11[MetObjects$Department == "Greek and Roman Art"] <- 1
-MetObjects$isDept11[MetObjects$Department != "Greek and Roman Art"] <- 0
+MetObjects_copy$isDept11[MetObjects_copy$Department == "Greek and Roman Art"] <- 1
+MetObjects_copy$isDept11[MetObjects_copy$Department != "Greek and Roman Art"] <- 0
 
-MetObjects$isDept12[MetObjects$Department == "Islamic Art"] <- 1
-MetObjects$isDept12[MetObjects$Department != "Islamic Art"] <- 0
+MetObjects_copy$isDept12[MetObjects_copy$Department == "Islamic Art"] <- 1
+MetObjects_copy$isDept12[MetObjects_copy$Department != "Islamic Art"] <- 0
 
-MetObjects$isDept13[MetObjects$Department == "Medieval Art"] <- 1
-MetObjects$isDept13[MetObjects$Department != "Medieval Art"] <- 0
+MetObjects_copy$isDept13[MetObjects_copy$Department == "Medieval Art"] <- 1
+MetObjects_copy$isDept13[MetObjects_copy$Department != "Medieval Art"] <- 0
 
-MetObjects$isDept14[MetObjects$Department == "Modern and Contemporary Art"] <- 1
-MetObjects$isDept14[MetObjects$Department != "Modern and Contemporary Art"] <- 0
+MetObjects_copy$isDept14[MetObjects_copy$Department == "Modern and Contemporary Art"] <- 1
+MetObjects_copy$isDept14[MetObjects_copy$Department != "Modern and Contemporary Art"] <- 0
 
-MetObjects$isDept15[MetObjects$Department == "Musical Instruments"] <- 1
-MetObjects$isDept15[MetObjects$Department != "Musical Instruments"] <- 0
+MetObjects_copy$isDept15[MetObjects_copy$Department == "Musical Instruments"] <- 1
+MetObjects_copy$isDept15[MetObjects_copy$Department != "Musical Instruments"] <- 0
 
-MetObjects$isDept16[MetObjects$Department == "Photographs"] <- 1
-MetObjects$isDept16[MetObjects$Department != "Photographs"] <- 0
+MetObjects_copy$isDept16[MetObjects_copy$Department == "Photographs"] <- 1
+MetObjects_copy$isDept16[MetObjects_copy$Department != "Photographs"] <- 0
 
-MetObjects$isDept17[MetObjects$Department == "Robert Lehman Collection"] <- 1
-MetObjects$isDept17[MetObjects$Department != "Robert Lehman Collection"] <- 0
+MetObjects_copy$isDept17[MetObjects_copy$Department == "Robert Lehman Collection"] <- 1
+MetObjects_copy$isDept17[MetObjects_copy$Department != "Robert Lehman Collection"] <- 0
 
-MetObjects$isDept18[MetObjects$Department == "The Libraries"] <- 1
-MetObjects$isDept18[MetObjects$Department != "The Libraries"] <- 0
+MetObjects_copy$isDept18[MetObjects_copy$Department == "The Libraries"] <- 1
+MetObjects_copy$isDept18[MetObjects_copy$Department != "The Libraries"] <- 0
 
-MetObjects$isDept19[MetObjects$Department == "Drawings and Prints"] <- 1
-MetObjects$isDept19[MetObjects$Department != "Drawings and Prints"] <- 0
+MetObjects_copy$isDept19[MetObjects_copy$Department == "Drawings and Prints"] <- 1
+MetObjects_copy$isDept19[MetObjects_copy$Department != "Drawings and Prints"] <- 0
 ```
 
 ```{r}
 
 #Rename date columns to be usable
-colnames(MetObjects)[22] <- "objectDateRange"
-colnames(MetObjects)[23] <- "objectBeginDate"
-colnames(MetObjects)[24] <- "objectEndDate"
+colnames(MetObjects_copy)[22] <- "objectDateRange"
+colnames(MetObjects_copy)[23] <- "objectBeginDate"
+colnames(MetObjects_copy)[24] <- "objectEndDate"
 
 ```
 
@@ -82,14 +82,17 @@ install.packages('dplyr')
 library(dplyr)
 
 #create new csv copies
-write.csv(MetObjects, file = "MetObjects-copy.csv")
+write.csv(MetObjects_copy, file = "MetObjects_copy.csv")
 
-#Work with new metobjects-copy file
-MetObjects_copy.csv <- "MetObjects"
+#Work with new MetObjects_copy-copy file
+MetObjects_copy.csv <- "MetObjects_copy"
 
 #remove non-numerical columns
-MetObjects_ce <- select(MetObjects, -isHighlight, -isPublic, -objectName, -Culture, -Title, -Period, -Dynasty, -Reign, -Portfolio, -artistRole, -artistPrefix, -artistDisplayName, -artistSuffix, -artistAlphaSort, -artistNationality, -objectDateRange, -Dimensions, -creditLine, -geographyType, -City, -State, -County, -Country, -Region, -Subregion, -Locale, -Locus, -Excavation, -River, -Classification, -rightsReproduction, -linkResolution, -metadataDate, -Repository, -Medium, -artistDisplayBio, -Department, -objectNumber, -artistBeginDate, -artistEndDate)
+MetObjects_ce <- select(MetObjects_copy, -isHighlight, -isPublic, -objectName, -Culture, -Title, -Period, -Dynasty, -Reign, -Portfolio, -artistRole, -artistPrefix, -artistDisplayName, -artistSuffix, -artistAlphaSort, -artistNationality, -objectDateRange, -Dimensions, -creditLine, -geographyType, -City, -State, -County, -Country, -Region, -Subregion, -Locale, -Locus, -Excavation, -River, -Classification, -rightsReproduction, -linkResolution, -metadataDate, -Repository, -Medium, -artistDisplayBio, -Department, -objectNumber, -artistBeginDate, -artistEndDate)
 
+```
+
+```{r}
 #correlation matrix
 install.packages('corrplot')
 library(corrplot)
@@ -105,12 +108,13 @@ corrplot.mixed(corrmatrix, number.cex = 0.8, tl.cex = 0.6)
 corrplot(corrmatrix, type="lower")
 ```
 
+
 ```{r}
 #leather subset
-leather <-subset(MetObjects, hasLeather==1)
+leather <-subset(MetObjects_copy, hasLeather==1)
 
 #leather and wood subset
-leatherWood <-subset(MetObjects, hasLeather==1 & hasWood==1)
+leatherWood <-subset(MetObjects_copy, hasLeather==1 & hasWood==1)
 
 #leater and steel subset
 leatherSteel <-subset(MetObjects_copy, hasLeather==1 & hasSteel==1)
@@ -120,6 +124,10 @@ selectedMediums <-subset(MetObjects_copy, hasGold == 1 | hasSilver == 1 | hasBro
 
 #create new csv copies
 write.csv(selectedMediums, file = "selected_mediums_MetObjects.csv")
+
+
+hist(leather$objectBeginDate,
+     xlim = c(-2000,2017))
 
 hist(leatherSteel$objectBeginDate,
      xlim = c(1200,2010))
@@ -136,7 +144,7 @@ write.csv(leather, file = "leather-copy.csv")
 
 ```{r}
 #Regression on objects by their begin date and department
-regression_1 <-lm(objectBeginDate~isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects)
+regression_1 <-lm(objectBeginDate~isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
 summary(regression_1)
 ```
 
@@ -146,36 +154,62 @@ summary(regression_1)
 # features: hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc,
 
 #Gold objects
-regression_2 <- lm(hasGold ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects)
+regression_2 <- lm(hasGold ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
 summary(regression_2)
 ```
 
 ```{r}
-#Glass objects
-regression_3 <- lm(hasGlass ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects)
+#Silver objects
+regression_3 <- lm(hasSilver ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
 summary(regression_3)
 ```
+
+```{r}
+#Bronze objects
+regression_4 <- lm(hasBronze ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
+summary(regression_4)
+```
+
+```{r}
+#Glass objects
+regression_5 <- lm(hasGlass ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
+summary(regression_5)
+```
+
 ```{r}
 #Jade objects
-regression_4 <- lm(hasJade ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects)
+regression_4 <- lm(hasJade ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects_copy)
 summary(regression_4)
 ```
 
 ```{r}
 #Leather objects
-regression_5 <- lm(hasLeather ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects)
+regression_5 <- lm(hasLeather ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects_copy)
 summary(regression_5)
 ```
+
 ```{r}
-#Alloy objects
-regression_6 <- lm(hasAlloy ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects)
+#Steel objects
+regression_6 <- lm(hasSteel~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects_copy)
 summary(regression_6)
+```
+```{r}
+#Zinc objects
+regression_7 <- lm(hasZinc ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
+summary(regression_7)
 ```
 
 ```{r}
 #Regression on drawings and prints and medium features
 
-regression_7 <- lm(isDept19 ~ hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc, data=MetObjects)
-summary(regression_7)
+regression_8 <- lm(isDept19 ~ hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc, data=MetObjects_copy)
+summary(regression_8)
+```
+
+```{r}
+#Regression on modern and contemporary art
+
+regression_9 <- lm(isDept14 ~ hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc, data=MetObjects_copy)
+summary(regression_9)
 ```
 
