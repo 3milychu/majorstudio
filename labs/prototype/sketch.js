@@ -5,131 +5,311 @@ var yearMin;
 var yearMax;
 var count;
 
-function preload (){
+
+//Sketch histogram
+
+function preload() {
+
+	// Get the data
 	table = loadTable("https://media.githubusercontent.com/media/3milychu/majorstudio/master/labs/analysis/selected_mediums_MetObjects.csv","csv","header");
-
 	console.log("Hello World!");
-	createCanvas(windowWidth, windowHeight);
+	
+	};
 
-}
-
-function setup (){
-	console.log(table);
+function setup(){
+	// console.log(table);
+	var canvas = createCanvas(windowWidth/3, windowHeight);
 
 	dates = [];
 
 	dates = sort(int(table.getColumn('objectBeginDate')));
-	console.log(dates);
+	// console.log(dates);
 
 	yearMin = min(int(table.getColumn("objectBeginDate")));
-	console.log(yearMin);
+	console.log("The smallest year in the dataset is " + yearMin);
 
 	yearMax = max(int(table.getColumn("objectBeginDate")));
-	console.log(yearMax);
+	console.log("The largest year in the dataset is " + yearMax);
 
 	objectCount = table.getRowCount("objectBeginDate");
-	console.log(objectCount);
+	console.log("There are " + objectCount + " objects in this dataset");
 
 	getYearLabel();
-}
 
+	};
 
-function getYearLabel() {
+function getYearLabel(){
 
 // Create dictionary of objecs by Year
 
 d3.csv("https://media.githubusercontent.com/media/3milychu/majorstudio/master/labs/analysis/selected_mediums_MetObjects.csv", function(data) {
 	  		data.forEach(function(d) {
 	   			d.objectBeginDate = +d.objectBeginDate;
+	   			d.hasGold = +d.hasGold;
+	   			d.hasSilver = +d.hasSilver;
+	   			d.hasBronze = +d.hasBronze;
 	   			 });
-	  		
 	  		// console.log(data);
 	  		
+	  		// key value pairs with key:"year"; value:"object count"
+
 			var groupByYear = d3.nest()
 				.key(function(d) { return d.objectBeginDate; })
 				.entries(data);
-	  		console.log(groupByYear[0]);
+	  		// console.log(groupByYear);
 
-// Create dictionary of objects with key: year; value: number of objects in year
+			// key value pairs with key=year; value=number of objects in year
 
 			var countByYear = d3.nest()
 			  .key(function(d) { return d.objectBeginDate; })
 			  .rollup(function(v) { return v.length; })
-			  .entries(data);
-			console.log(JSON.stringify(countByYear[0]));
+			  .object(data);
 
-// Create histogram
+			// console.log(JSON.stringify(countByYear[0]));
 
-			// set the dimensions and margins of the graph
-				var margin = {top: 10, right: 30, bottom: 30, left: 40},
-				    width = 960 - margin.left - margin.right,
-				    height = 500 - margin.top - margin.bottom;
+			// create subsets of data for each medium selector
 
-				// set the ranges
-				var x = d3.scaleLinear()
-				          .domain(yearMin, yearMax)
-				          .rangeRound([0, width]);
-				var y = d3.scaleLinear()
-				          .range([height, 0]);
+		   		total = d3.nest()
+			   		.key(function(d) { return d.objectBeginDate; })
+				  	.rollup(function(v) { return v.length; })
+				  	.entries(data)
+				  	.sort(function(a,b) {return d3.ascending(a.key,b.key);});
 
-				// set the parameters for the histogram
-				var histogram = d3.histogram()
-				    .value(function(d) { return d.countByYear; })
-				    .domain(x.domain())
-				    .thresholds(x.ticks(11));
+		   		// Data for "gold" selection
+			   goldData = data.filter(function(d) { 
+			    	return d.hasGold == 1
+			    	});
 
-				// append the svg object to the body of the page
-				// append a 'group' element to 'svg'
-				// moves the 'group' element to the top left margin
-				var svg = d3.select("body").append("svg")
-				    .attr("width", width + margin.left + margin.right)
-				    .attr("height", height + margin.top + margin.bottom)
-				  .append("g")
-				    .attr("transform", 
-				          "translate(" + margin.left + "," + margin.top + ")");
+			   goldDataUse = d3.nest()
+			   		.key(function(d) { return d.objectBeginDate; })
+				  	.rollup(function(v) { return v.length; })
+				  	.entries(goldData)
+				  	.sort(function(a,b) {return d3.ascending(a.key,b.key);});
+
+			    // console.log(goldDataUse);
+
+			   // Data for "silver" selection
+			   silverData = data.filter(function(d) { 
+			    	return d.hasSilver == 1
+			    	});
+
+			   silverDataUse = d3.nest()
+			   		.key(function(d) { return d.objectBeginDate; })
+				  	.rollup(function(v) { return v.length; })
+				  	.entries(silverData)
+				  	.sort(function(a,b) {return d3.ascending(a.key,b.key);});
+
+			    // console.log(silverDataUse);
+
+			    // Data for "bronze" selection
+			   bronzeData = data.filter(function(d) { 
+			    	return d.hasBronze == 1
+			    	});
+
+			   bronzeDataUse = d3.nest()
+			   		.key(function(d) { return d.objectBeginDate; })
+				  	.rollup(function(v) { return v.length; })
+				  	.entries(bronzeData)
+				  	.sort(function(a,b) {return d3.ascending(a.key,b.key);});
+
+			    // console.log(bronzeDataUse);
+
+			     // Data for "glass" selection
+			   glassData = data.filter(function(d) { 
+			    	return d.hasGlass== 1
+			    	});
+
+			   glassDataUse = d3.nest()
+			   		.key(function(d) { return d.objectBeginDate; })
+				  	.rollup(function(v) { return v.length; })
+				  	.entries(glassData)
+				  	.sort(function(a,b) {return d3.ascending(a.key,b.key);});
+
+			    // console.log(bronzeDataUse);
 
 
-				  data.forEach(function(d) {
-				      // d.objectBeginDate = parseDate(d.dtg);
+			     // Data for "leather" selection
+			   leatherData = data.filter(function(d) { 
+			    	return d.hasLeather == 1
+			    	});
 
-					for (var i=0; i<d.countByYear.length; i++){
-						if (d.countByYear[i] < 0) {
-							d.countByYear = (abs(countyByYear.key[i])  + " BCE");
-							} else {
-							d.countByYear = d.countByYear.key[i];
-							}
-						}
-						console.log(d.countByYear.key["1945"]);
+			   leatherDataUse = d3.nest()
+			   		.key(function(d) { return d.objectBeginDate; })
+				  	.rollup(function(v) { return v.length; })
+				  	.entries(leatherData)
+				  	.sort(function(a,b) {return d3.ascending(a.key,b.key);});
 
-				  });
+			    // console.log(bronzeDataUse);
 
-				  // group the data for the bars
-				  var bins = histogram(data);
+			     // Data for "steel" selection
+			   steelData = data.filter(function(d) { 
+			    	return d.hasSteel == 1
+			    	});
 
-				  // Scale the range of the data in the y domain
-				  y.domain([0, d3.max(bins, function(d) { return d.length; })]);
+			   steelDataUse = d3.nest()
+			   		.key(function(d) { return d.objectBeginDate; })
+				  	.rollup(function(v) { return v.length; })
+				  	.entries(steelData)
+				  	.sort(function(a,b) {return d3.ascending(a.key,b.key);});
 
-				  // append the bar rectangles to the svg element
-				  svg.selectAll("rect")
-				      .data(bins)
-				    .enter().append("rect")
-				      .attr("class", "bar")
-				      .attr("x", 1)
-				      .attr("transform", function(d) {
-						  return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-				      .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-				      .attr("height", function(d) { return height - y(d.length); });
+			    // console.log(bronzeDataUse);
 
-				  // add the x Axis
-				  svg.append("g")
-				      .attr("transform", "translate(0," + height + ")")
-				      .call(d3.axisBottom(x));
+			     // Data for "zinc" selection
+			   zincData = data.filter(function(d) { 
+			    	return d.hasZinc == 1
+			    	});
 
-				  // add the y Axis
-				  svg.append("g")
-				      .call(d3.axisLeft(y));
+			   zincDataUse = d3.nest()
+			   		.key(function(d) { return d.objectBeginDate; })
+				  	.rollup(function(v) { return v.length; })
+				  	.entries(zincData)
+				  	.sort(function(a,b) {return d3.ascending(a.key,b.key);});
+
+			    // console.log(bronzeDataUse);
+
+			    // draw the histogram
+				var margin = {
+							top: (parseInt(d3.select('body').style('height'), 10)/10), 
+							right: (parseInt(d3.select('body').style('width'), 10)/20), 
+							bottom: (parseInt(d3.select('body').style('height'), 10)/100), 
+							left: (parseInt(d3.select('body').style('width'), 10)/20)},
+				            width = parseInt(d3.select('body').style('width'), 10) - margin.left - margin.right,
+				            height = parseInt(d3.select('body').style('height'), 10) - margin.top - margin.bottom;
+
+				var div = d3.select("body").append("div").attr("class", "toolTip");
+
+				var formatPercent = d3.format(",.2r");
+
+				    // define x and y parameters
+
+					var x = d3.scaleLinear()
+				            .range([100, windowWidth/3]);
+
+				    var y = d3.scaleLinear()
+				            .range([height/6, 0]);
+
+				    var xAxis = d3.axisBottom(x);
+
+				    var yAxis = d3.axisLeft(y);
+
+				var svg = d3.select("svg")
+				// var svg = d3.select("body").append("svg")
+				            .attr("width", windowWidth/3 + margin.left + margin.right)
+				            .attr("height", height/6)
+				            .append("g")
+				            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+				svg.append("g")
+				            .attr("class", "x axis")
+				            .attr("transform", "translate(0," + height + ")")
+				            .call(xAxis);
+
+				change(total);
+
+// define change datasetTotal
+function change(dataset) {
+
+    x.domain([d3.min(dataset, function(d) { return d.key; }), d3.max(dataset, function(d) { return d.key; })]);
+  	y.domain([0, d3.max(dataset, function(d) { return d.value; })]);
+
+    svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height/6 + ")")
+            .call(xAxis);
+
+    svg.select(".y.axis").remove();
+    svg.select(".x.axis").remove();
+
+    svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Frequency");
+
+    var bar = svg.selectAll(".bar")
+            .data(dataset, function(d) { return d.key; });
+
+    // new data:
+    bar.enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.key); })
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height/6 - y(d.value); })
+            .attr("width", 5);
+
+    bar
+            .on("mousemove", function(d){
+                div.style("left", d3.event.pageX+10+"px");
+                div.style("top", d3.event.pageY-25+"px");
+                div.style("display", "inline-block");
+                div.html("Year" + (d.key)+"<br>"+(d.value) + Objects);
+            });
+    bar
+            .on("mouseout", function(d){
+                div.style("display", "none");
+            });
+
+    // removed data:
+    bar.exit().remove();
+    // updated data:
+    bar
+            .transition()
+            .duration(750)
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height/6 - y(d.value); });
+};
+
+// change dataset to selected dataset
+				d3.select("input[value=\"total\"]").property("checked", true);
+
+			    d3.selectAll("input").on("change", selectDataset);
+
+			    function selectDataset()
+			    {
+			        var value = this.value;
+			        if (value == "All")
+			        {
+			            change(total);
+			        }
+			        else if (value == "Gold")
+			        {
+			            change(goldDataUse);
+			        }
+			        else if (value == "Silver")
+			        {
+			            change(silverDataUse);
+			        }
+			        else if (value == "Bronze")
+			        {
+			            change(bronzeDataUse);
+			        }
+			        else if (value == "Glass")
+			        {
+			            change(glassDataUse);
+			        }
+			        else if (value == "Leather")
+			        {
+			            change(leatherDataUse);
+			        }
+			        else if (value == "Steel")
+			        {
+			            change(steelDataUse);
+			        }
+			        else if (value == "Zinc")
+			        {
+			            change(zincDataUse);
+			        }
+			    }
+
+
+
+//end d3.csv function
 			      
-				});
+		});
 
+//endgetyearlabel function
 	};
-

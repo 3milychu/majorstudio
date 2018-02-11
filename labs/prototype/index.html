@@ -1,12 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-	<script src="http://d3js.org/d3.v4.min.js"></script>
+	<title>What Makes Art?</title>
+	<link href="https://fonts.googleapis.com/css?family=Yantramanav:300,400,700" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<script src="https://d3js.org/d3.v4.js"></script>
 	<script type="text/javascript" src="libraries/p5.js"></script>
 	<script type="text/javascript" src="libraries/p5.dom.js"></script>
 	<script type="text/javascript" src="sketch.js"></script>
 </head>
 <body>
+
+	<div id="title">
+		<img id="favicon" src="assets/favicon.jpg">
+		<h1>What Makes Art?</h1>
+	</div>
+
+	<div id="histogram">
+		<svg></svg>
+	</div>
+		
+		<form>
+			    <label>All<input class="radio-custom" type="radio" name="dataset" id="dataset" value="All" checked></label>
+			    <label>Gold<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Gold"></label>
+			    <label>Silver<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Silver"></label>
+			    <label>Bronze<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Bronze"></label>
+			    <label>Glass<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Glass"></label>
+			    <label>Leather<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Leather"></label>
+			    <label>Steel<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Steel"></label>
+			    <label>Zinc<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Zinc"></label>
+		</form>
+
+
+	<div id="selector"></div>
+
+	<div id="gallery"></div>
+
+	<div id ="origins"></div>
+
 </body>
 </html>
