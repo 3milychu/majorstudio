@@ -8,7 +8,7 @@ body{
     top:0%;
     left:0%;
     margin:0;	
-    overflow:hidden;
+    overflow-x:hidden;
 }
 
 h1 {
@@ -78,7 +78,7 @@ label {
 
 form {
     margin-left:5%;
-    width:10%;
+    width:80%;
     text-align: justify;
 /*    width:30%;*/
 }
@@ -226,4 +226,40 @@ text.label{
 
 .x.axis path {
     display: none;
+}
+
+/*selector*/
+
+#selector{
+    width:20%;
+    overflow-x:hidden;
+    display:inline-block;
+    position:relative;
+}
+
+/*gallery*/
+
+
+#gallery {
+    background-color:#E6E6E6;
+    width:30%;
+    display:inline-block;
+    position:relative;
+}
+
+#gallery h1 {
+    display:block;
+}
+
+#gallery h3, h4, p {
+    display:inline;
+}
+
+#gallery p{
+    margin-left: 2%;
+}
+
+#top1{
+    width:100%;
+    height:5%;
 }
