@@ -113,6 +113,9 @@ corrplot(corrmatrix, type="lower")
 #leather subset
 leather <-subset(MetObjects_copy, hasLeather==1)
 
+#glass subset
+glass <-subset(MetObjects_copy, hasGlass == 1)
+
 #leather and wood subset
 leatherWood <-subset(MetObjects_copy, hasLeather==1 & hasWood==1)
 
@@ -131,6 +134,9 @@ hist(leather$objectBeginDate,
 
 hist(leatherSteel$objectBeginDate,
      xlim = c(1200,2010))
+
+hist(leather$objectBeginDate)
+hist(glass$objectBeginDate)
 
 hist(leather$objectBeginDate)
 
