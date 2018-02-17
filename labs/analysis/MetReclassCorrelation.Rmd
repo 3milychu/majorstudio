@@ -131,14 +131,29 @@ leatherWood <-subset(MetObjects_copy, hasLeather==1 & hasWood==1)
 leatherSteel <-subset(MetObjects_copy, hasLeather==1 & hasSteel==1)
 
 #gold, glass, bronze, glass subset
-mix <- subset(MetObjects_copy, hasGlass==1 & hasSteel==1)
+mix <- subset(MetObjects_copy, hasWood ==1 & hasSilk == 1 & hasGlass ==1)
 
 #selectedMediums subset
 selectedMediums <-subset(MetObjects_copy, hasGold == 1 | hasSilver == 1 | hasBronze == 1 | hasGlass == 1 | hasLeather==1 | hasSteel==1 | hasZinc == 1 )
 
+#topMediums subset
+topMediums <- subset(MetObjects_copy, hasWood ==1 | hasSilk == 1 | hasInk ==1 | hasSilver==1 | hasGlass == 1 | hasSteel ==1 | hasGold ==1)
+
 #create new csv copies
 write.csv(selectedMediums, file = "selected_mediums_MetObjects.csv")
+write.csv(topMediums, file = "topmediums_MetObjects.csv")
 
+#check that image dataset contains only unique rows
+images <- unique(MetImages)
+
+#join image urls with topMediums
+topMediums_withImages <- left_join(topMediums,images,by="objectID")
+
+#remove unnecessary columns
+topMediums_withImages_reduced <- select(topMediums_withImages, -isHighlight, -Title, -Period, -Dynasty, -Reign, -Portfolio, -artistRole, -artistPrefix, -artistSuffix, -artistNationality, -objectDateRange, -Dimensions, -creditLine, -geographyType, -City, -State, -County, -Country, -Region, -Subregion, -Locale, -Locus, -Excavation, -River, -rightsReproduction, -linkResolution, -metadataDate, -Repository, -artistDisplayBio, -objectNumber,-isDept1,-isDept2,-isDept3,-isDept4,-isDept5,-isDept6,-isDept7,-isDept8,-isDept9,-isDept10,-isDept11,-isDept12,-isDept13,-isDept14,-isDept15,-isDept16,-isDept17,-isDept18,-isDept19, -artistBeginDate, -artistEndDate)
+
+#remove all duplicates - keep just the first row for duplicates
+topMediums_final <- topMediums_withImages_reduced[!duplicated(topMediums_withImages_reduced$objectID), ]
 
 hist(leather$objectBeginDate,
      xlim = c(-2000,2017))
