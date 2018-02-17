@@ -107,6 +107,14 @@ corrplot.mixed(corrmatrix, number.cex = 0.8, tl.cex = 0.6)
 
 corrplot(corrmatrix, type="lower")
 ```
+```{r}
+install.packages('plyr')
+library(plyr)
+
+#hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc
+
+summary(MetObjects_ce)
+```
 
 
 ```{r}
@@ -121,6 +129,9 @@ leatherWood <-subset(MetObjects_copy, hasLeather==1 & hasWood==1)
 
 #leater and steel subset
 leatherSteel <-subset(MetObjects_copy, hasLeather==1 & hasSteel==1)
+
+#gold, glass, bronze, glass subset
+mix <- subset(MetObjects_copy, hasGlass==1 & hasSteel==1)
 
 #selectedMediums subset
 selectedMediums <-subset(MetObjects_copy, hasGold == 1 | hasSilver == 1 | hasBronze == 1 | hasGlass == 1 | hasLeather==1 | hasSteel==1 | hasZinc == 1 )

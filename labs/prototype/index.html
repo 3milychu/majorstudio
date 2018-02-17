@@ -25,60 +25,81 @@
 	<!-- Selector -->
 	<div id="selector">
 		<form>
-			    <label>All<input class="radio-custom" type="radio" name="dataset" id="dataset" value="All" checked></label>
-			    <label>Gold<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Gold"></label>
-			    <label>Silver<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Silver"></label>
-			    <label>Bronze<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Bronze"></label>
-			    <label>Glass<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Glass"></label>
-			    <label>Leather<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Leather"></label>
-			    <label>Steel<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Steel"></label>
-			    <label>Zinc<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Zinc"></label>
+			    <label onclick="showTile()">All<input class="radio-custom" type="radio" name="dataset" id="dataset" value="All" checked></label>
+			    <label onclick="showTile()">Gold<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Gold"></label>
+			    <label onclick="showTile()">Silver<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Silver"></label>
+			    <label onclick="showTile()">Bronze<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Bronze"></label>
+			    <label onclick="showTile()">Glass<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Glass"></label>
+			    <label onclick="showTile()">Leather<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Leather"></label>
+			    <label onclick="showTile()">Steel<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Steel"></label>
+			    <label onclick="showTile()">Zinc<input class="radio-custom" type="radio" name="dataset" id="dataset" value="Zinc"></label>
 		</form>
 	</div>
 
 	<!-- Gallery -->
 	<div id="gallery">
+
+		<!-- Default Tile -->
+		<div class="tile" id="tile0">
+			<h1>Add Mediums</h1>
+		</div>
 		
 		<!-- First Choice -->
-		<div class="tile">
+		<div class="tile" id="tile1">
 
 			<div class="images">
-				<div id="top1"></div>
-				<div id="top2"></div>
-				<div id="top3"></div>
+				<div id="top1">
+					<div class="caption" id="dept1">
+					</div>
+				</div>
+
+				<div id="top2">
+					<div class="caption2" id="dept2">
+					</div>
+				</div>
+
+				<div id="top3">
+					<div class="caption3" id="dept3">
+					</div>
+				</div>
 			</div>
 
 			<div class="info">
-				<h1>Leather</h1>
-				<em><h3>94%</h3></em><p>Department 1</p>
+				<div class="medium" id="choice1"></div>
+				<div class="info1" id="dept1-percent"><text>94%</text></div>
+				<div class="info2" id="dept1-name"><text>Department 1</text></div>
 				<br>
-				<em><h4>6%</h4></em><p>Department 2</p>
+				<div class="info3" id="dept2-percent"><text>6%</text></div>
+				<div class="info4" id="dept2-name"><text>Department 2</text></div>
 			</div>
 
 		</div>
 	</div>
+
 	<!-- Origins -->
-	<div id ="origins"></div>
+	<div id ="origins">
+		<h1>Origins</h1>
+		<div class="culture" id="ranks"><text>Add mediums to view primary cultures of origin by rank</text></div>
+	</div>
 
 </body>
 
 <script>
 
-	if(document.getElementById('goldDataUse').checked) {
-	  //Male radio button is checked
-	}else if(document.getElementById('silverDatuse').checked) {
-	  //Female radio button is checked
-	}else if(document.getElementById('silverDatuse').checked) {
-		//Female radio button is checked
-	}else if(document.getElementById('silverDatuse').checked) {
-		//Female radio button is checked
-	}else if(document.getElementById('silverDatuse').checked) {
-		//Female radio button is checked
-	}else if(document.getElementById('silverDatuse').checked) {
-		//Female radio button is checked
-	}else if(document.getElementById('silverDatuse').checked) {
-		//Female radio button is checked
+	// document.getElementById("goldDataUse").addEventListener("click", showTile);
+
+	function showTile() {
+	    document.getElementById("tile1").style.visibility = "visible";
+	    document.getElementById("tile1").style.float = "left";
+	    document.getElementById("tile0").style.float = "right";
+	    document.getElementById("tile0").style.visibility = "hidden";
 	}
+
+	// if(document.getElementById('total').checked) {
+	//   //If "all" is checked
+	// }else {
+
+	// }
 
 </script>
 

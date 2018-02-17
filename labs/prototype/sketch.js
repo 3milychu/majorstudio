@@ -5,58 +5,46 @@ var yearMin;
 var yearMax;
 var count;
 
+var total;
+var goldData;
+var silverData;
+var bronzeData;
+var leatherData;
+var steelData;
+var glassData;
+var zincData;
+
 
 //Sketch histogram
 
-function preload() {
-
-	// Get the data
-	table = loadTable("https://media.githubusercontent.com/media/3milychu/majorstudio/master/labs/analysis/selected_mediums_MetObjects.csv","csv","header");
-	console.log("Hello World!");
-	
-	};
-
 function setup(){
-	// console.log(table);
+
 	var canvas = createCanvas(windowWidth/3, windowHeight);
 
-	dates = [];
-
-	dates = sort(int(table.getColumn('objectBeginDate')));
-	// console.log(dates);
-
-	yearMin = min(int(table.getColumn("objectBeginDate")));
-	console.log("The smallest year in the dataset is " + yearMin);
-
-	yearMax = max(int(table.getColumn("objectBeginDate")));
-	console.log("The largest year in the dataset is " + yearMax);
-
-	objectCount = table.getRowCount("objectBeginDate");
-	console.log("There are " + objectCount + " objects in this dataset");
-
-	getYearLabel();
+	getHistogram();
 
 	};
 
-function getYearLabel(){
-
-// Create dictionary of objecs by Year
+function getHistogram(){
 
 d3.csv("https://media.githubusercontent.com/media/3milychu/majorstudio/master/labs/analysis/selected_mediums_MetObjects.csv", function(data) {
 	  		data.forEach(function(d) {
 	   			d.objectBeginDate = +d.objectBeginDate;
-	   			d.hasGold = +d.hasGold;
-	   			d.hasSilver = +d.hasSilver;
-	   			d.hasBronze = +d.hasBronze;
 	   			 });
-	  		// console.log(data);
+	  			// console.log(data);
+
+			var yearMin = d3.min(data, function(d) { return d.objectBeginDate; });
+			console.log("The smallest year in the dataset is " + yearMin);
+
+			var yearMax = d3.max(data, function(d) { return d.objectBeginDate; });
+			console.log("The largest year in the dataset is " + yearMax);
 	  		
 	  		// key value pairs with key:"year"; value:"object count"
 
 			var groupByYear = d3.nest()
 				.key(function(d) { return d.objectBeginDate; })
 				.entries(data);
-	  		// console.log(groupByYear);
+	  			// console.log(groupByYear);
 
 			// key value pairs with key=year; value=number of objects in year
 
@@ -64,10 +52,10 @@ d3.csv("https://media.githubusercontent.com/media/3milychu/majorstudio/master/la
 			  .key(function(d) { return d.objectBeginDate; })
 			  .rollup(function(v) { return v.length; })
 			  .object(data);
-
-			// console.log(JSON.stringify(countByYear[0]));
+				// console.log(JSON.stringify(countByYear[0]));
 
 			// create subsets of data for each medium selector
+				data = data;
 
 		   		total = d3.nest()
 			   		.key(function(d) { return d.objectBeginDate; })
@@ -178,19 +166,17 @@ d3.csv("https://media.githubusercontent.com/media/3milychu/majorstudio/master/la
 
 				var div = d3.select("body").append("div").attr("class", "toolTip");
 
-				var formatPercent = d3.format(",.2r");
-
 				    // define x and y parameters
 
 					var x = d3.scaleLinear()
-				            .range([100, windowWidth/3]);
+				            .range([120, windowWidth/3]);
 
 				    var y = d3.scaleLinear()
 				            .range([height/6, 0]);
 
-				    var xAxis = d3.axisBottom(x);
+				    var xAxis = d3.axisBottom(x).ticks(5);
 
-				    var yAxis = d3.axisLeft(y);
+				    var yAxis = d3.axisLeft(y).ticks(5);
 
 				var svg = d3.select("svg")
 				// var svg = d3.select("body").append("svg")
@@ -217,6 +203,7 @@ function change(dataset) {
             .attr("transform", "translate(0," + height/6 + ")")
             .call(xAxis);
 
+
     svg.select(".y.axis").remove();
     svg.select(".x.axis").remove();
 
@@ -225,7 +212,8 @@ function change(dataset) {
             .call(yAxis)
             .append("text")
             .attr("transform", "rotate(-90)")
-            .attr("y", 6)
+            // .attr("transform", "translate(0, -100)")
+            .attr("y", 100)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
             .text("Frequency");
@@ -239,14 +227,15 @@ function change(dataset) {
             .attr("x", function(d) { return x(d.key); })
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return height/6 - y(d.value); })
-            .attr("width", 5);
+            // .attr("width", function(d) { return (windowWidth/3) / (yearMax-yearMin); });
+            .attr("width", 4);
 
     bar
             .on("mousemove", function(d){
                 div.style("left", d3.event.pageX+10+"px");
                 div.style("top", d3.event.pageY-25+"px");
                 div.style("display", "inline-block");
-                div.html("Year" + (d.key)+"<br>"+(d.value) + Objects);
+                div.html("Year" + (d.key)+"<br>"+(d.value) + " Items");
             });
     bar
             .on("mouseout", function(d){
@@ -261,9 +250,229 @@ function change(dataset) {
             .duration(750)
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return height/6 - y(d.value); });
+
+// end change dataset function
 };
 
-// change dataset to selected dataset
+// UPDATE FUNCTION: origin stats for each dataset
+function origins(dataset) {
+
+	var totalRows = dataset.length;
+	// console.log(totalRows);
+
+	var format = d3.format(".0%");
+
+	var origins = d3.nest()
+   		.key(function(d) { return d.Culture; })
+	  	.rollup(function(v) { return v.length; })
+	  	.entries(dataset)
+	  	.sort(function(a,b) {return d3.descending(a.value,b.value);});
+	// console.log(origins);
+
+	d3.select(".culture").selectAll("text").remove()
+
+	var culture1 = d3.select(".culture").selectAll("#ranks")
+		 	.data(origins.filter(function (d, i) { return i === 0;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "culture1")
+	        .text(function(d) { return d.key + " " + format(d.value/totalRows); })
+	        .exit();
+
+	var culture2 = d3.select(".culture").selectAll("#ranks")
+		 	.data(origins.filter(function (d, i) { return i === 1;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "culture2")
+	        .text(function(d) { return d.key + " " + format(d.value/totalRows); })
+	        .exit();
+
+	var culture3 = d3.select(".culture").selectAll("#ranks")
+		 	.data(origins.filter(function (d, i) { return i === 2;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "culture3")
+	        .text(function(d) { return d.key + " " + format(d.value/totalRows); })
+	        .exit();
+
+	var culture4 = d3.select(".culture").selectAll("#ranks")
+		 	.data(origins.filter(function (d, i) { return i === 3;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "culture4")
+	        .text(function(d) { return d.key + " " + format(d.value/totalRows); })
+	        .exit();
+
+	var culture5= d3.select(".culture").selectAll("#ranks")
+		 	.data(origins.filter(function (d, i) { return i === 4;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "culture5")
+	        .text(function(d) { return d.key + " " + format(d.value/totalRows); })
+	        .exit();
+
+	var culture6 = d3.select(".culture").selectAll("#ranks")
+		 	.data(origins.filter(function (d, i) { return i === 5;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "culture6")
+	        .text(function(d) { return d.key + " " + format(d.value/totalRows); })
+	        .exit();
+
+	var culture7 = d3.select(".culture").selectAll("#ranks")
+		 	.data(origins.filter(function (d, i) { return i === 6;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "culture7")
+	        .text(function(d) { return d.key + " " + format(d.value/totalRows); })
+	        .exit();
+    // end update origins function
+    };
+
+    // UPDATE FUNCTION: gallery view for each dataset 
+    function gallery(dataset) {
+
+    var totalRows = dataset.length;
+	// console.log(totalRows);
+
+    var name;
+
+	if (dataset == goldData){
+		name = "Gold";
+	} else if (dataset == silverData) {
+		name = "Silver";
+	} else if (dataset == bronzeData) {
+		name = "Bronze";
+	} else if (dataset == glassData) {
+		name = "Glass";
+	} else if (dataset == leatherData) {
+		name = "Leather";
+	} else if (dataset == steelData) {
+		name = "Steel";
+	} else if (dataset == zincData) {
+		name = "Zinc";
+	};
+
+	var format = d3.format(".0%");
+
+	var departments = d3.nest()
+   		.key(function(d) { return d.Department; })
+	  	.rollup(function(v) { return v.length; })
+	  	.entries(dataset)
+	  	.sort(function(a,b) {return d3.descending(a.value,b.value);});
+	console.log(departments);
+
+	d3.select(".caption").selectAll("text").remove();
+
+	var dept1_name = d3.select(".caption").selectAll("#dept1")
+		 	.data(departments.filter(function (d, i) { return i === 0;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "name1")
+	        .text(function(d) { return d.key })
+	        .exit();
+
+	var dept1_count = d3.select(".caption").selectAll("#dept1")
+		 	.data(departments.filter(function (d, i) { return i === 0;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "count1")
+	        .text(function(d) { return d.value + " items"})
+	        .exit();
+
+	d3.select(".caption2").selectAll("text").remove();
+
+	var dept2_name = d3.select(".caption2").selectAll("#dept2")
+		 	.data(departments.filter(function (d, i) { return i === 1;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "name2")
+	        .text(function(d) { return d.key })
+	        .exit();
+
+	var dept2_count = d3.select(".caption2").selectAll("#dept2")
+		 	.data(departments.filter(function (d, i) { return i === 1;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "count2")
+	        .text(function(d) { return d.value + " items"})
+	        .exit();
+
+	d3.select(".caption3").selectAll("text").remove();
+
+	var dept3_name = d3.select(".caption3").selectAll("#dept3")
+		 	.data(departments.filter(function (d, i) { return i === 2;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "name3")
+	        .text(function(d) { return d.key })
+	        .exit();
+
+	var dept3_count = d3.select(".caption3").selectAll("#dept3")
+		 	.data(departments.filter(function (d, i) { return i === 2;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "count3")
+	        .text(function(d) { return d.value + " items"})
+	        .exit();
+
+	d3.select(".medium").selectAll("text").remove();
+
+	var choice1 = d3.select(".medium").selectAll("#choice1")
+			.data(departments.filter(function (d, i) { return i === 0;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "choice1")
+	        .text(name)
+	        .exit();
+
+	d3.select(".info1").selectAll("text").remove();
+
+	var dept1_percent = d3.select(".info1").selectAll("#dept1-percent")
+			.data(departments.filter(function (d, i) { return i === 0;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "dept1-percent")
+	        .text(function(d) {return format(d.value/totalRows); })
+	        .exit();
+
+	d3.select(".info2").selectAll("text").remove();
+
+	var info_dept1 = d3.select(".info2").selectAll("#dept1-name")
+		 	.data(departments.filter(function (d, i) { return i === 0;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "dept1-name")
+	        .text(function(d) { return d.key })
+	        .exit();
+
+	d3.select(".info3").selectAll("text").remove();
+
+	var dept1_percent = d3.select(".info3").selectAll("#dept2-percent")
+			.data(departments.filter(function (d, i) { return i === 1;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "dept2-percent")
+	        .text(function(d) {return format(d.value/totalRows); })
+	        .exit();
+
+	d3.select(".info4").selectAll("text").remove();
+
+	var info_dept1 = d3.select(".info4").selectAll("#dept2-name")
+		 	.data(departments.filter(function (d, i) { return i === 1;}))
+	        .enter()
+	        .append("text")
+	        .attr("id", "dept2-name")
+	        .text(function(d) { return d.key })
+	        .exit();
+
+
+	
+    // end update gallery function
+    };
+
+
+				// change dataset to selected dataset
 				d3.select("input[value=\"total\"]").property("checked", true);
 
 			    d3.selectAll("input").on("change", selectDataset);
@@ -274,42 +483,58 @@ function change(dataset) {
 			        if (value == "All")
 			        {
 			            change(total);
+			            origins(data);
+			            gallery(data);
 			        }
 			        else if (value == "Gold")
 			        {
 			            change(goldDataUse);
+			            origins(goldData);
+			            gallery(goldData);
 			        }
 			        else if (value == "Silver")
 			        {
 			            change(silverDataUse);
+			            origins(silverData);
+			            gallery(silverData);
 			        }
 			        else if (value == "Bronze")
 			        {
 			            change(bronzeDataUse);
+			            origins(bronzeData);
+			            gallery(bronzeData);
 			        }
 			        else if (value == "Glass")
 			        {
 			            change(glassDataUse);
+			            origins(glassData);
+			            gallery(glassData);
 			        }
 			        else if (value == "Leather")
 			        {
 			            change(leatherDataUse);
+			            origins(leatherData);
+			            gallery(leatherData);
 			        }
 			        else if (value == "Steel")
 			        {
 			            change(steelDataUse);
+			            origins(steelData);
+			            gallery(steelData);
 			        }
 			        else if (value == "Zinc")
 			        {
 			            change(zincDataUse);
+			            origins(zincData);
+			            gallery(zincData);
 			        }
 			    }
-
-
 
 //end d3.csv function
 			      
 		});
 
-//endgetyearlabel function
+//end getHistogram function
 	};
+
+
