@@ -118,24 +118,6 @@ summary(MetObjects_ce)
 
 
 ```{r}
-#leather subset
-leather <-subset(MetObjects_copy, hasLeather==1)
-
-#glass subset
-glass <-subset(MetObjects_copy, hasGlass == 1)
-
-#leather and wood subset
-leatherWood <-subset(MetObjects_copy, hasLeather==1 & hasWood==1)
-
-#leater and steel subset
-leatherSteel <-subset(MetObjects_copy, hasLeather==1 & hasSteel==1)
-
-#gold, glass, bronze, glass subset
-mix <- subset(topMediums_final, hasWood ==1 & hasSilk == 1 & hasGlass ==1)
-
-#selectedMediums subset
-selectedMediums <-subset(MetObjects_copy, hasGold == 1 | hasSilver == 1 | hasBronze == 1 | hasGlass == 1 | hasLeather==1 | hasSteel==1 | hasZinc == 1 )
-
 #topMediums subset
 topMediums <- subset(MetObjects_copy, hasWood ==1 | hasSilk == 1 | hasInk ==1 | hasSilver==1 | hasGlass == 1 | hasSteel ==1 | hasGold ==1)
 
@@ -156,26 +138,40 @@ write.csv(selectedMediums, file = "selected_mediums_MetObjects.csv")
 write.csv(topMediums, file = "topmediums_MetObjects.csv")
 write.csv(topMediums_final, file = "topMediums_final.csv")
 write.csv(mix, file = "mix.csv")
+```
 
+```{r}
+# Join met objects with MMAImageURLs if Primary == 1
 
-hist(leather$objectBeginDate,
-     xlim = c(-2000,2017))
+#check that MMAimageurls contains only primary images
+primaryImages <- subset (MMAImageURLS, PrimaryDisplay == 1)
 
-hist(leatherSteel$objectBeginDate,
-     xlim = c(1200,2010))
+#join primaryImages with MetObjects_2
+colnames(primaryImages)[1] <- "objectID"
+colnames(MetObjects_2)[4] <- "objectID"
+MetObjects_primaryImages <- left_join(MetObjects_2,primaryImages,by="objectID")
 
-hist(leather$objectBeginDate)
-hist(glass$objectBeginDate)
+# Write to csv
+colnames(MetObjects_primaryImages)[5] <- "Department"
+write.csv(MetObjects_primaryImages, file = "MetObjects_primaryImages.csv")
+```
 
-hist(leather$objectBeginDate)
+```{r}
+# Check out contemporary items
+modern <- subset(MetObjects_primaryImages, Department == "Modern and Contemporary Art" & URL != "NA")
 
-leatherMI <- subset(leather, Department =="Musical Instruments")
-leatherAA <- subset(leather, Department =="Arms and Armor")
+hist(modern$`Object Begin Date`)
 
-#create new csv copies
-write.csv(leather, file = "leather-copy.csv")
+summary(modern)
+
+sum(modern$`Artist Display Name` != 'NA', na.rm=FALSE)
+sum(modern$`Artist Display Name` == 'Paul Klee', na.rm=TRUE)
+
+# Write to csv
+write.csv(modern, file = "modern.csv")
 
 ```
+
 
 ```{r}
 #Regression on objects by their begin date and department
