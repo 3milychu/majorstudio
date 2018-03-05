@@ -1,0 +1,74 @@
+---
+title: "Analysis of Costume Institute Objects at the MET"
+output: html_notebook
+---
+
+```{r}
+# Rename Public Domain column
+colnames(MetObjects_primaryImages)[4]<-"isPublic"
+
+# Make subset of costume objects
+costume <- subset(MetObjects_primaryImages, Department == "Costume Institute" & isPublic=="True" & URL != "NA")
+
+# Checkout distribution of date range
+hist(costume$`Object Begin Date`)
+
+# remove unneeded columns
+install.packages('dplyr')
+library(dplyr)
+
+colnames(costume)[colnames(costume)=="Object Name"] <- "objectName"
+colnames(costume)[colnames(costume)=="Object Date"] <- "objectDate"
+colnames(costume)[colnames(costume)=="Object Begin Date"] <- "objectBegin"
+colnames(costume)[colnames(costume)=="Object End Date"] <- "objectEnd"
+colnames(costume)[colnames(costume)=="Credit Line"] <- "credit"
+colnames(costume)[colnames(costume)=="Link Resource"] <- "link"
+colnames(costume)[colnames(costume)=="Image File Name"] <- "img"
+colnames(costume)[colnames(costume)=="URL"] <- "src"
+
+costumes_ce <- select(costume, objectID, objectName, Title, Culture, objectDate, objectBegin, objectEnd, Medium, credit, link, img, src)
+
+# write subset to csv
+write.csv(costumes_ce, file="costume.csv")
+
+types<-table(unlist(costume_reclass$objectName))
+print(types)
+write.csv(types, file="types.csv")
+
+cultures<-table(unlist(costume_reclass$Culture))
+print(cultures)
+write.csv(cultures,file="cultures.csv")
+
+```
+```{r}
+
+# reformat newly classed objectnames
+types_ce <- select(types, Var1, bodyclass1, bodyclass2)
+colnames(types_ce)[colnames(types_ce)=="Var1"] <- "objectName"
+
+# fill in new columns on costumes_ce based on objectName
+library(dplyr)
+costumes_reclass <- left_join(costumes_ce, types_ce, "objectName")
+
+# reorder columns
+costumes_reclass <- costumes_reclass[,c(1,2,3,13,14,4,5,6,7,8,9,10,11,12)]
+
+# frequency table on objectName reclass "bodyclass1"
+reclass<-table(unlist(costumes_reclass$bodyclass1))
+print(reclass)
+
+# frequency table on objectName reclass for accessory
+reclass2<-table(unlist(costumes_reclass$bodyclass2))
+print(reclass2)
+
+write.csv(costumes_reclass, file="costume_reclass.csv")
+```
+```{r}
+# Explore suits
+
+suits <- subset(costume_reclass, objectName == "Suit")
+
+table(suits$Culture)
+hist(suits$objectBegin)
+```
+

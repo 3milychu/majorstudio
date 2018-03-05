@@ -1,0 +1,245 @@
+---
+title: "Met Objects Dummy Variables & Correlation"
+output: html_notebook
+---
+```{r}
+#Look at objects and features columns
+head(MetObjects_copy)
+```
+
+
+```{r}
+# reclass "Departments" into binary
+MetObjects_copy$isDept1[MetObjects_copy$Department == "American Decorative Arts"] <- 1
+MetObjects_copy$isDept1[MetObjects_copy$Department != "American Decorative Arts"] <- 0
+
+MetObjects_copy$isDept2[MetObjects_copy$Department == "American Paintings and Sculpture"] <- 1
+MetObjects_copy$isDept2[MetObjects_copy$Department != "American Paintings and Sculpture"] <- 0
+
+MetObjects_copy$isDept3[MetObjects_copy$Department == "Ancient Near Eastern Art"] <- 1
+MetObjects_copy$isDept3[MetObjects_copy$Department != "Ancient Near Eastern Art"] <- 0
+
+MetObjects_copy$isDept4[MetObjects_copy$Department == "Arms and Armor"] <- 1
+MetObjects_copy$isDept4[MetObjects_copy$Department != "Arms and Armor"] <- 0
+
+MetObjects_copy$isDept5[MetObjects_copy$Department == "Arts of Africa, Oceania, and the Americas"] <- 1
+MetObjects_copy$isDept5[MetObjects_copy$Department != "Arts of Africa, Oceania, and the Americas"] <- 0
+
+MetObjects_copy$isDept6[MetObjects_copy$Department == "Asian Art"] <- 1
+MetObjects_copy$isDept6[MetObjects_copy$Department != "Asian Art"] <- 0
+
+MetObjects_copy$isDept7[MetObjects_copy$Department == "Costume Institute"] <- 1
+MetObjects_copy$isDept7[MetObjects_copy$Department != "Costume Institute"] <- 0
+
+MetObjects_copy$isDept8[MetObjects_copy$Department == "Egyptian Art"] <- 1
+MetObjects_copy$isDept8[MetObjects_copy$Department != "Egyptian Art"] <- 0
+
+MetObjects_copy$isDept9[MetObjects_copy$Department == "European Paintings"] <- 1
+MetObjects_copy$isDept9[MetObjects_copy$Department != "European Paintings"] <- 0
+
+MetObjects_copy$isDept10[MetObjects_copy$Department == "European Sculpture and Decorative Arts"] <- 1
+MetObjects_copy$isDept10[MetObjects_copy$Department != "European Sculpture and Decorative Arts"] <- 0
+
+MetObjects_copy$isDept11[MetObjects_copy$Department == "Greek and Roman Art"] <- 1
+MetObjects_copy$isDept11[MetObjects_copy$Department != "Greek and Roman Art"] <- 0
+
+MetObjects_copy$isDept12[MetObjects_copy$Department == "Islamic Art"] <- 1
+MetObjects_copy$isDept12[MetObjects_copy$Department != "Islamic Art"] <- 0
+
+MetObjects_copy$isDept13[MetObjects_copy$Department == "Medieval Art"] <- 1
+MetObjects_copy$isDept13[MetObjects_copy$Department != "Medieval Art"] <- 0
+
+MetObjects_copy$isDept14[MetObjects_copy$Department == "Modern and Contemporary Art"] <- 1
+MetObjects_copy$isDept14[MetObjects_copy$Department != "Modern and Contemporary Art"] <- 0
+
+MetObjects_copy$isDept15[MetObjects_copy$Department == "Musical Instruments"] <- 1
+MetObjects_copy$isDept15[MetObjects_copy$Department != "Musical Instruments"] <- 0
+
+MetObjects_copy$isDept16[MetObjects_copy$Department == "Photographs"] <- 1
+MetObjects_copy$isDept16[MetObjects_copy$Department != "Photographs"] <- 0
+
+MetObjects_copy$isDept17[MetObjects_copy$Department == "Robert Lehman Collection"] <- 1
+MetObjects_copy$isDept17[MetObjects_copy$Department != "Robert Lehman Collection"] <- 0
+
+MetObjects_copy$isDept18[MetObjects_copy$Department == "The Libraries"] <- 1
+MetObjects_copy$isDept18[MetObjects_copy$Department != "The Libraries"] <- 0
+
+MetObjects_copy$isDept19[MetObjects_copy$Department == "Drawings and Prints"] <- 1
+MetObjects_copy$isDept19[MetObjects_copy$Department != "Drawings and Prints"] <- 0
+```
+
+```{r}
+
+#Rename date columns to be usable
+colnames(MetObjects_copy)[22] <- "objectDateRange"
+colnames(MetObjects_copy)[23] <- "objectBeginDate"
+colnames(MetObjects_copy)[24] <- "objectEndDate"
+
+```
+
+```{r}
+install.packages('dplyr')
+library(dplyr)
+
+#create new csv copies
+write.csv(MetObjects_copy, file = "MetObjects_copy.csv")
+
+#Work with new MetObjects_copy-copy file
+MetObjects_copy.csv <- "MetObjects_copy"
+
+#remove non-numerical columns
+MetObjects_ce <- select(MetObjects_copy, -isHighlight, -isPublic, -objectName, -Culture, -Title, -Period, -Dynasty, -Reign, -Portfolio, -artistRole, -artistPrefix, -artistDisplayName, -artistSuffix, -artistAlphaSort, -artistNationality, -objectDateRange, -Dimensions, -creditLine, -geographyType, -City, -State, -County, -Country, -Region, -Subregion, -Locale, -Locus, -Excavation, -River, -Classification, -rightsReproduction, -linkResolution, -metadataDate, -Repository, -Medium, -artistDisplayBio, -Department, -objectNumber, -artistBeginDate, -artistEndDate)
+
+```
+
+```{r}
+#correlation matrix
+install.packages('corrplot')
+library(corrplot)
+
+corrmatrix <- cor(MetObjects_ce, use="complete.obs")
+View(corrmatrix)
+
+corrplot(corrmatrix, method="circle") # corrmatrix is the name of the correlation matrix we created above
+
+corrplot.mixed(corrmatrix, number.cex = 0.8, tl.cex = 0.6)
+#number.cex changes the size of the number fonts. tl.cex changes the size of the labels
+
+corrplot(corrmatrix, type="lower")
+```
+```{r}
+install.packages('plyr')
+library(plyr)
+
+#hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc
+
+summary(MetObjects_ce)
+```
+
+
+```{r}
+#topMediums subset
+topMediums <- subset(MetObjects_copy, hasWood ==1 | hasSilk == 1 | hasInk ==1 | hasSilver==1 | hasGlass == 1 | hasSteel ==1 | hasGold ==1)
+
+#check that image dataset contains only unique rows
+images <- unique(MetImages)
+
+#join image urls with topMediums
+topMediums_withImages <- left_join(topMediums,images,by="objectID")
+
+#remove unnecessary columns
+topMediums_withImages_reduced <- select(topMediums_withImages, -isHighlight, -Period, -Dynasty, -Reign, -Portfolio, -artistRole, -artistPrefix, -artistSuffix, -artistNationality, -objectDateRange, -Dimensions, -creditLine, -geographyType, -City, -State, -County, -Country, -Region, -Subregion, -Locale, -Locus, -Excavation, -River, -rightsReproduction, -linkResolution, -metadataDate, -Repository, -artistDisplayBio, -objectNumber,-isDept1,-isDept2,-isDept3,-isDept4,-isDept5,-isDept6,-isDept7,-isDept8,-isDept9,-isDept10,-isDept11,-isDept12,-isDept13,-isDept14,-isDept15,-isDept16,-isDept17,-isDept18,-isDept19, -artistBeginDate, -artistEndDate)
+
+#remove all duplicates - keep just the first row for duplicates
+topMediums_final <- topMediums_withImages_reduced[!duplicated(topMediums_withImages_reduced$objectID), ]
+
+#create new csv copies
+write.csv(selectedMediums, file = "selected_mediums_MetObjects.csv")
+write.csv(topMediums, file = "topmediums_MetObjects.csv")
+write.csv(topMediums_final, file = "topMediums_final.csv")
+write.csv(mix, file = "mix.csv")
+```
+
+```{r}
+# Join met objects with MMAImageURLs if Primary == 1
+
+#check that MMAimageurls contains only primary images
+primaryImages <- subset (MMAImageURLS, PrimaryDisplay == 1)
+
+#join primaryImages with MetObjects_2
+colnames(primaryImages)[1] <- "objectID"
+colnames(MetObjects_2)[4] <- "objectID"
+MetObjects_primaryImages <- left_join(MetObjects_2,primaryImages,by="objectID")
+
+# Write to csv
+colnames(MetObjects_primaryImages)[5] <- "Department"
+write.csv(MetObjects_primaryImages, file = "MetObjects_primaryImages.csv")
+```
+
+```{r}
+# Check out contemporary items
+modern <- subset(MetObjects_primaryImages, Department == "Modern and Contemporary Art" & URL != "NA")
+
+hist(modern$`Object Begin Date`)
+
+summary(modern)
+
+sum(modern$`Artist Display Name` != 'NA', na.rm=FALSE)
+sum(modern$`Artist Display Name` == 'Paul Klee', na.rm=TRUE)
+
+# Write to csv
+write.csv(modern, file = "modern.csv")
+
+```
+
+
+```{r}
+#Regression on objects by their begin date and department
+regression_1 <-lm(objectBeginDate~isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
+summary(regression_1)
+```
+
+
+```{r}
+#Regression on objects by medium features and department
+# features: hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc,
+
+#Gold objects
+regression_2 <- lm(hasGold ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
+summary(regression_2)
+```
+
+```{r}
+#Silver objects
+regression_3 <- lm(hasSilver ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
+summary(regression_3)
+```
+
+```{r}
+#Bronze objects
+regression_4 <- lm(hasBronze ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
+summary(regression_4)
+```
+
+```{r}
+#Glass objects
+regression_5 <- lm(hasGlass ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
+summary(regression_5)
+```
+
+```{r}
+#Jade objects
+regression_4 <- lm(hasJade ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects_copy)
+summary(regression_4)
+```
+
+```{r}
+#Leather objects
+regression_5 <- lm(hasLeather ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects_copy)
+summary(regression_5)
+```
+
+```{r}
+#Steel objects
+regression_6 <- lm(hasSteel~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18+isDept19,  data=MetObjects_copy)
+summary(regression_6)
+```
+```{r}
+#Zinc objects
+regression_7 <- lm(hasZinc ~ isDept1+isDept2+isDept3+isDept4+isDept5+isDept6+isDept7+isDept8+isDept9+isDept10+isDept11+isDept12+isDept13+isDept14+isDept15+isDept16+isDept17+isDept18 +isDept19,  data=MetObjects_copy)
+summary(regression_7)
+```
+
+```{r}
+#Regression on drawings and prints and medium features
+
+regression_8 <- lm(isDept19 ~ hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc, data=MetObjects_copy)
+summary(regression_8)
+```
+
+```{r}
+#Regression on modern and contemporary art
+
+regression_9 <- lm(isDept14 ~ hasAbalone + hasAgate + hasAlloy + hasBronze + hasCoral + hasGlass + hasGold + hasInk + hasJade + hasLeather + hasLinen + hasNickel + hasPorcelain + hasSilk + hasSilver + hasSteel + hasWalnut + hasWatercolour + hasWood + hasZinc, data=MetObjects_copy)
+summary(regression_9)
+```
