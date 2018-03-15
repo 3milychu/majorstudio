@@ -121,6 +121,12 @@ summary(MetObjects_ce)
 #topMediums subset
 topMediums <- subset(MetObjects_copy, hasWood ==1 | hasSilk == 1 | hasInk ==1 | hasSilver==1 | hasGlass == 1 | hasSteel ==1 | hasGold ==1)
 
+# Wood, Ink, Glass test
+test_subset <- subset(topMediums_final, hasWood ==1 & hasInk ==1 & hasGlass ==1)
+hist(test_subset$objectBeginDate)
+
+table(test_subset$Department)
+
 #check that image dataset contains only unique rows
 images <- unique(MetImages)
 
