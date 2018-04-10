@@ -1,11 +1,3 @@
-{
-  "name": "dvia-mapping-space",
-  "version": "1.0.0",
-  "description": "DVIA: Exercise 4",
-  "scripts": {
-    "start": "http-server . -a localhost -p 8080 -c-1"
-  },
-  "dependencies": {
-    "http-server": "^0.10.0"
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:68cba1b8a190068471d4d5531428b4b7973974078e32ab9954eb475c127e0432
+size 223
